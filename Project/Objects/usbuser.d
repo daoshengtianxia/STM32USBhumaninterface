@@ -1,0 +1,9 @@
+.\objects\usbuser.o: ..\User\USB\usbuser.c
+.\objects\usbuser.o: ..\User\USB\type.h
+.\objects\usbuser.o: ..\User\USB\usb.h
+.\objects\usbuser.o: ..\User\USB\usbcfg_STM32F10x.h
+.\objects\usbuser.o: ..\User\USB\usbhw_STM32F10x.h
+.\objects\usbuser.o: ..\User\USB\usbcore.h
+.\objects\usbuser.o: ..\User\USB\usbuser.h
+.\objects\usbuser.o: ..\User\USB\hiduser.h
+.\objects\usbuser.o: ..\User\USB\demo.h

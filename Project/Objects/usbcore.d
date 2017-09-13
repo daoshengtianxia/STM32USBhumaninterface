@@ -1,0 +1,10 @@
+.\objects\usbcore.o: ..\User\USB\usbcore.c
+.\objects\usbcore.o: ..\User\USB\type.h
+.\objects\usbcore.o: ..\User\USB\usb.h
+.\objects\usbcore.o: ..\User\USB\usbcfg_STM32F10x.h
+.\objects\usbcore.o: ..\User\USB\usbhw_STM32F10x.h
+.\objects\usbcore.o: ..\User\USB\usbcore.h
+.\objects\usbcore.o: ..\User\USB\usbdesc.h
+.\objects\usbcore.o: ..\User\USB\usbuser.h
+.\objects\usbcore.o: ..\User\USB\hid.h
+.\objects\usbcore.o: ..\User\USB\hiduser.h
