@@ -16,14 +16,18 @@
 #include "includes.h"
 #include "bsp_key.h"
 #include "bsp_led.h"
-
-
+#include "rc522_function.h"
+#include "rc522_config.h"
 #include "usb_lib.h"
 #include "hw_config.h"
 #include "usbio.h"
 #include "usb_desc.h"
 
 extern uint8_t USB_Received_Flag;
+
+extern uint8_t USB_Receive_Buffer[REPORT_COUNT];
+extern uint8_t USB_Send_Buffer[REPORT_COUNT];
+
 /**
 * @brief  main
 * @param  none
@@ -31,9 +35,10 @@ extern uint8_t USB_Received_Flag;
 */
 int main(void)
 {
-	uint8_t dscnt=0;
 	uint8_t data[REPORT_COUNT];
-//	uint8_t i=0;
+	Set_System();
+
+	uint8_t ret=0, i=0;
 	Set_System();
 //	BSP_USART_Init();
 //	sprintf((char *)SendData, "Init compled\r\n");
@@ -42,46 +47,55 @@ int main(void)
 	USB_Interrupts_Config();
 	Set_USBClock();
 	USB_Init();
+	RC522_Init();     //RC522 Init
 	BSP_KEY_Init();
 	BSP_LED_Init();
 	
+	PcdReset();
+	M500PcdConfigISOType ( 'A' );
+	
+	for(i=0;i<64;i++){
+		USB_Receive_Buffer[i] = i+6;
+	}
+
+	for(i=0;i<64;i++){
+		USB_Send_Buffer[i] = i+12;
+	}
+	
+	
 	while(1)
 	{
+		u8 ucArray_ID [ 4 ];                                                                                             //?¨¨o¨®¡ä?¡¤?IC?¡§¦Ì?¨¤¨¤D¨ªo¨ªUID(IC?¡§D¨°¨¢Do?)
+		u8 ucStatusReturn;                                                                                               //¡¤¦Ì??¡Á¡ä¨¬?
 		if(USB_Received_Flag){
 			USB_Received_Flag=0;
-			USB_GetData(data,sizeof(data));
-			if(data[1] == 'A')
+			ret = USB_GetData(data, sizeof(data));
+			if(data[63] == 'A')
 			{
 				LED_ON;
 			}
-			else if(data[1] == 'B')
+			else if(data[63] == 'B')
 			{
 				LED_OFF;
 			}
-//			ret = USB_GetData(data,sizeof(data));
-//			printf("usb get data %d byte data\n\r",ret);
-//			for(i=0;i<ret;i++){
-//				printf("0x%02X ",data[i]);
-//			}
-//			printf("\n\r");
-			if(dscnt<1)
-			{
-//				for(i=0; i < REPORT_COUNT; i++)
-//				{
-//					data[i] = '0'+dscnt;
-//				}
-				dscnt++;
-				sprintf((char *)data, "Hello I am STM32 HID AAAAABBBBBBBBBHAHAH                  ERTYUA");
-			}
-			else
-			{
-				sprintf((char *)data, "AAAAABBBBBBBBBHAHAH Hello I am STM32 HID                  ABCDFA");
-				dscnt = 0;
-			}
-
-			
-			USB_SendData(data,sizeof(data));
+			USB_SendData(data, sizeof(data));
 		}
+		
+		if ( ( ucStatusReturn = PcdRequest ( PICC_REQALL, ucArray_ID ) ) != MI_OK )                                 
+		ucStatusReturn = PcdRequest ( PICC_REQALL, ucArray_ID );		                                               
+
+		if ( ucStatusReturn == MI_OK  )
+		{
+			if ( PcdAnticoll ( ucArray_ID ) == MI_OK )                                                                  
+			{
+				data[0] = ucArray_ID [ 0 ];
+				data[1] = ucArray_ID [ 1 ];
+				data[2] = ucArray_ID [ 2 ];
+				data[3] = ucArray_ID [ 3 ];
+				USB_SendData(data, sizeof(data));
+			}
+		}
+		
 //		if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1) == 0)
 //		{
 //			int delay = 1000;
