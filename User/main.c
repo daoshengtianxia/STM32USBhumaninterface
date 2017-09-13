@@ -34,7 +34,7 @@ int main(void)
 	uint8_t dscnt=0;
 	uint8_t data[REPORT_COUNT];
 //	uint8_t i=0;
-	Set_System();//系统时钟初始化
+	Set_System();
 //	BSP_USART_Init();
 //	sprintf((char *)SendData, "Init compled\r\n");
 //	USART1_Send(SendData, strlen((char *)SendData));
