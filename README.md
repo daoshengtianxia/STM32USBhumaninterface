@@ -1,0 +1,3 @@
+# STM32USBhumaninterface
+基于stm32f103USBHID，已经可以和安卓上位机通信
+上位机与下位机稍后会一起完善。
